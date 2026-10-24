@@ -1,0 +1,350 @@
+@import 'tailwindcss';
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-card: var(--card);
+  --color-soft: var(--soft);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  /* The two flag colours (and the "step done" colour) come from the site's colour theme, set in the admin. */
+  --color-saffron: var(--yellow);
+  --color-kred: var(--red);
+  --color-done: var(--done);
+  --font-display: 'Baloo Tamma 2', 'Noto Sans Kannada', system-ui, sans-serif;
+  --font-sans: 'Inter', 'Noto Sans Kannada', system-ui, sans-serif;
+}
+
+/*
+ * COLOUR THEMES. Default = "turmeric". The admin picks one (Site settings); the page sets <html data-palette="...">.
+ * Each theme has a light and a dark set. Dark applies when the visitor chose dark (data-theme="dark") or, with no
+ * choice, when the device prefers dark. apps/api/test/palettes.test.ts checks every pair below for readability,
+ * so after changing a colour run `pnpm test`.
+ *   paper/card/soft = page, cards, tinted bands   ink/muted = text   accent = red-ish TEXT   yellow/red = brand fills
+ */
+:root {
+  --on-yellow: #1c1c1e;
+}
+:root {
+  --paper: #fffbf2;
+  --card: #ffffff;
+  --soft: #fff0cc;
+  --ink: #2b1d14;
+  --muted: #6b5646;
+  --line: #eadfc8;
+  --accent: #9f1d17;
+  --yellow: #f2a900;
+  --red: #b3261e;
+  --done: #b3261e;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --paper: #1f1a16;
+    --card: #2b251f;
+    --soft: #29231d;
+    --ink: #f5ede0;
+    --muted: #bdb0a0;
+    --line: #403629;
+    --accent: #ff9a8a;
+    --yellow: #f2a900;
+    --red: #d0443a;
+    --done: #d0443a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme='dark'] {
+  --paper: #1f1a16;
+  --card: #2b251f;
+  --soft: #29231d;
+  --ink: #f5ede0;
+  --muted: #bdb0a0;
+  --line: #403629;
+  --accent: #ff9a8a;
+  --yellow: #f2a900;
+  --red: #d0443a;
+  --done: #d0443a;
+  color-scheme: dark;
+}
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+
+/* silk */
+:root[data-palette='silk'] {
+  --paper: #fbf7ee;
+  --card: #ffffff;
+  --soft: #f3e9d2;
+  --ink: #241a17;
+  --muted: #5e4f46;
+  --line: #e4d8bc;
+  --accent: #7b1e2b;
+  --yellow: #c9a227;
+  --red: #7b1e2b;
+  --done: #7b1e2b;
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-palette='silk']:not([data-theme='light']) {
+    --paper: #1c1618;
+    --card: #28201f;
+    --soft: #261e20;
+    --ink: #f3ebdd;
+    --muted: #bdafa3;
+    --line: #3d3234;
+    --accent: #e3c15a;
+    --yellow: #c9a227;
+    --red: #c0405a;
+    --done: #c0405a;
+    color-scheme: dark;
+  }
+}
+:root[data-palette='silk'][data-theme='dark'] {
+  --paper: #1c1618;
+  --card: #28201f;
+  --soft: #261e20;
+  --ink: #f3ebdd;
+  --muted: #bdafa3;
+  --line: #3d3234;
+  --accent: #e3c15a;
+  --yellow: #c9a227;
+  --red: #c0405a;
+  --done: #c0405a;
+  color-scheme: dark;
+}
+
+/* flag */
+:root[data-palette='flag'] {
+  --paper: #fafaf7;
+  --card: #ffffff;
+  --soft: #eef3f0;
+  --ink: #1f2a2e;
+  --muted: #55646a;
+  --line: #dce3e0;
+  --accent: #b71c1c;
+  --yellow: #ffb300;
+  --red: #c62828;
+  --done: #1f6f5c;
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-palette='flag']:not([data-theme='light']) {
+    --paper: #1e2224;
+    --card: #282d30;
+    --soft: #232a2a;
+    --ink: #eef2f0;
+    --muted: #aeb9b5;
+    --line: #38413f;
+    --accent: #ff8a80;
+    --yellow: #ffb300;
+    --red: #cc4337;
+    --done: #1f7a64;
+    color-scheme: dark;
+  }
+}
+:root[data-palette='flag'][data-theme='dark'] {
+  --paper: #1e2224;
+  --card: #282d30;
+  --soft: #232a2a;
+  --ink: #eef2f0;
+  --muted: #aeb9b5;
+  --line: #38413f;
+  --accent: #ff8a80;
+  --yellow: #ffb300;
+  --red: #cc4337;
+  --done: #1f7a64;
+  color-scheme: dark;
+}
+
+/* classic */
+:root[data-palette='classic'] {
+  --paper: #ffffff;
+  --card: #ffffff;
+  --soft: #fff9e0;
+  --ink: #1c1c1e;
+  --muted: #5b5b62;
+  --line: #e7e7ea;
+  --accent: #c62828;
+  --yellow: #ffc20e;
+  --red: #d32f2f;
+  --done: #d32f2f;
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-palette='classic']:not([data-theme='light']) {
+    --paper: #1e1f22;
+    --card: #2a2b30;
+    --soft: #26272b;
+    --ink: #f2f2f3;
+    --muted: #b4b4bb;
+    --line: #3b3c42;
+    --accent: #ff8a80;
+    --yellow: #ffc20e;
+    --red: #d32f2f;
+    --done: #d32f2f;
+    color-scheme: dark;
+  }
+}
+:root[data-palette='classic'][data-theme='dark'] {
+  --paper: #1e1f22;
+  --card: #2a2b30;
+  --soft: #26272b;
+  --ink: #f2f2f3;
+  --muted: #b4b4bb;
+  --line: #3b3c42;
+  --accent: #ff8a80;
+  --yellow: #ffc20e;
+  --red: #d32f2f;
+  --done: #d32f2f;
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-saffron);
+  outline-offset: 2px;
+}
+
+/* In the components layer so Tailwind utilities (hidden, sm:hidden...) can override them. */
+@layer components {
+/* Karnataka flag stripe: yellow over red. */
+.silk {
+  height: 8px;
+  background: linear-gradient(var(--color-saffron) 50%, var(--color-kred) 50%);
+}
+
+/* Placeholder when no image is set: the flag itself. */
+.flag-fallback {
+  background: linear-gradient(var(--color-saffron) 50%, var(--color-kred) 50%);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.5rem 1.25rem;
+  border-radius: 999px;
+  font-weight: 600;
+  transition: transform 0.15s, background-color 0.15s;
+  cursor: pointer;
+}
+.btn:active {
+  transform: scale(0.97);
+}
+.btn-primary {
+  background: var(--color-kred);
+  color: #fff;
+}
+.btn-primary:hover {
+  filter: brightness(0.88);
+}
+.btn-gold {
+  background: var(--color-saffron);
+  color: var(--on-yellow);
+}
+.btn-gold:hover {
+  filter: brightness(1.07);
+}
+.btn-ghost {
+  border: 2px solid currentColor;
+}
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;
+  border: 1.5px solid var(--color-line);
+  background: var(--color-card);
+  color: var(--color-ink);
+}
+.input:focus {
+  border-color: var(--color-kred);
+}
+
+.card {
+  background: var(--color-card);
+  border: 1px solid var(--color-line);
+  border-radius: 1.25rem;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rise {
+  animation: rise 0.5s ease-out both;
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.rangoli {
+  animation: spin-slow 6s linear infinite;
+}
+
+.scroll-hide {
+  scrollbar-width: none;
+}
+.scroll-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.prose-lines p + p {
+  margin-top: 1em;
+}
+}
+
+/* Sponsor strip: one copy of the logos scrolls left by exactly its own width, then repeats. */
+@keyframes sponsor-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.sponsor-track {
+  animation: sponsor-scroll 40s linear infinite;
+}
+.sponsor-strip:hover .sponsor-track,
+.sponsor-strip:focus-within .sponsor-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sponsor-track {
+    animation: none;
+  }
+  .sponsor-copy {
+    display: none;
+  }
+  .sponsor-viewport {
+    overflow-x: auto;
+  }
+}

@@ -1,0 +1,28 @@
+# Render "Blueprint" for the FREE demo site. See docs/DEMO-HOSTING.md.
+# Render asks you for the three values marked `sync: false` the first time; nothing secret lives in this file.
+services:
+  - type: web
+    name: kannada-sangha-demo
+    runtime: docker
+    plan: free
+    region: frankfurt # EU. Change if you prefer another region.
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /healthz
+    envVars:
+      # DEMO ONLY. Restores the sample content when the database is empty and adds a "demo" banner + reset button.
+      # Never set this on a real site: the reset button erases data.
+      - key: DEMO_MODE
+        value: "true"
+      - key: TRUST_PROXY
+        value: "1"
+      # Render generates a long random secret for you (the app needs at least 32 characters).
+      - key: JWT_SECRET
+        generateValue: true
+      # You choose these. The password needs 12+ characters and no easy words (the app refuses to start otherwise).
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      # From MongoDB Atlas (free): mongodb+srv://USER:PASSWORD@cluster0.xxxxx.mongodb.net/sangha?retryWrites=true&w=majority
+      - key: MONGODB_URI
+        sync: false

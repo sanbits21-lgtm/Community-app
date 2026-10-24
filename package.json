@@ -1,0 +1,9 @@
+{ "name": "kannada-sangha", "private": true, "version": "0.1.0",
+  "scripts": {
+    "dev": "pnpm -r --parallel --filter @sangha/api --filter @sangha/web dev",
+    "build": "pnpm --filter @sangha/web build",
+    "start": "pnpm --filter @sangha/api start",
+    "seed": "pnpm --filter @sangha/api seed",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test"
+  } }

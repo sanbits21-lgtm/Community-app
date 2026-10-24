@@ -1,0 +1,2 @@
+
+C:\Users\santh\kannada-sangha\apps\api>  "C:\Users\santh\kannada-sangha\apps\api\node_modules\.bin\\node.exe"  "C:\Users\santh\kannada-sangha\apps\api\node_modules\.bin\\..\tsx\dist\cli.mjs" -e import('./src/config.ts').then(() = console.error(e.message); process.exit(3); })

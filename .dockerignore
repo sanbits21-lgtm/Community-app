@@ -1,0 +1,14 @@
+.git
+**/node_modules
+**/dist
+apps/api/.data
+apps/api/uploads
+apps/api/private-uploads
+.env
+.env.*
+!.env.production.example
+*.log
+*.png
+*.webp
+!apps/api/seed-assets/**
+!apps/web/public/icons/**

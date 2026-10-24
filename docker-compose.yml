@@ -1,0 +1,59 @@
+name: sangha
+
+services:
+  # HTTPS + redirects. Gets and renews the certificate for $DOMAIN by itself; needs ports 80 and 443 open.
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      DOMAIN: ${DOMAIN:?Set DOMAIN in .env, e.g. DOMAIN=yoursangha.lu}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      app:
+        condition: service_healthy
+
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      MONGODB_URI: mongodb://mongo:27017/sangha
+      UPLOAD_DIR: /data/uploads
+      PRIVATE_DIR: /data/private
+      TRUST_PROXY: "1"
+    volumes:
+      - uploads:/data # /data/uploads = website photos, /data/private = payment screenshots
+    depends_on:
+      mongo:
+        condition: service_healthy
+    # No published ports: only Caddy can reach the app.
+    expose:
+      - "4000"
+
+  # Not published to the internet; reachable only from the app on the private compose network.
+  mongo:
+    image: mongo:8
+    restart: unless-stopped
+    command: ["--wiredTigerCacheSizeGB", "0.5"]
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+
+volumes:
+  uploads:
+  mongo_data:
+  caddy_data:
+  caddy_config:

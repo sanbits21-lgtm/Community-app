@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Generated placeholder icon. To change the app icon, replace the PNG files in this folder (see docs/PWA.md). -->
+  <rect width="512" height="256" fill="#FFC20E"/>
+  <rect y="256" width="512" height="256" fill="#D32F2F"/>
+  <circle cx="256" cy="256" r="160" fill="#FFFFFF"/>
+  <text x="256" y="330" font-family="'Baloo Tamma 2','Noto Sans Kannada',sans-serif" font-weight="800" font-size="230" text-anchor="middle" fill="#1C1C1E">ಕ</text>
+</svg>
