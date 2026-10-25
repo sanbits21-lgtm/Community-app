@@ -3,5 +3,7 @@ packages:
   - packages/*
 
 allowBuilds:
-  esbuild: set this to true or false
-  mongodb-memory-server: set this to true or false
+  # esbuild downloads its native binary here; the site build and tsx need it.
+  esbuild: true
+  # Only tests/dev use it (it fetches a MongoDB binary); the deployed image never does.
+  mongodb-memory-server: false
