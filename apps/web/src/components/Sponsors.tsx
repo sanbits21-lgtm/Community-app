@@ -46,18 +46,19 @@ export function SponsorStrip({ sponsors, label, highlightIds = [], clearNext = f
   const one = Array.from({ length: reps }, () => list).flat();
   return (
     <section aria-label={t(label)} className={`sponsor-strip relative z-10 border-b border-line bg-paper ${clearNext ? 'mb-8' : ''}`}>
-      <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-2">
-        <h2 className="shrink-0 text-xs font-bold uppercase tracking-wide text-accent sm:text-sm">{t(label)}</h2>
-        <div className="sponsor-viewport min-w-0 flex-1 overflow-hidden">
-          <ul className="sponsor-track flex w-max items-center gap-4">
+      {/* Scrolls within the site width (same as the page content), no visible title: the logos speak for themselves. The name stays for screen readers. */}
+      <h2 className="sr-only">{t(label)}</h2>
+      <div className="mx-auto max-w-6xl px-4 py-2">
+        <div className="sponsor-viewport overflow-hidden">
+          <ul className="sponsor-track flex w-max items-center">
             {one.map((s, i) => (
-              <li key={`a${i}`}>
+              <li key={`a${i}`} className="pr-4">
                 <Logo s={s} highlight={hi.has(s._id)} />
               </li>
             ))}
             {/* Second copy makes the loop seamless; hidden from screen readers and the tab order. */}
             {one.map((s, i) => (
-              <li key={`b${i}`} aria-hidden="true" className="sponsor-copy" inert>
+              <li key={`b${i}`} aria-hidden="true" className="sponsor-copy pr-4" inert>
                 <Logo s={s} highlight={hi.has(s._id)} />
               </li>
             ))}

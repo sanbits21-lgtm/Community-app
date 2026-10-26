@@ -6,6 +6,7 @@ import { api, ApiError } from '../lib/api';
 import { eur } from '../lib/format';
 import { ThemeToggle } from '../lib/theme';
 import { AccountPage } from './Account';
+import { EmailPage } from './Email';
 import { PaymentsPage, UsersPage } from './Payments';
 import { ResourcePage, SettingsPage } from './Resource';
 
@@ -134,6 +135,7 @@ const NAV: Array<[string, string, boolean?]> = [
   ['/admin/payment', 'Payment options'],
   ['/admin/journey', 'Our journey'],
   ['/admin/site', 'Site settings'],
+  ['/admin/email', 'Email'],
   ['/admin/users', 'Admins', true],
   ['/admin/account', 'My account'],
 ];
@@ -183,6 +185,7 @@ export function AdminApp() {
             <Route path="payment" element={<SettingsPage which="payment" />} />
             <Route path="site" element={<SettingsPage which="site" />} />
             <Route path="journey" element={<SettingsPage which="journey" />} />
+            <Route path="email" element={<EmailPage />} />
             <Route path="account" element={<AccountPage />} />
             {me.data.role === 'owner' && <Route path="users" element={<UsersPage />} />}
             <Route path="*" element={<Navigate to="/admin" replace />} />

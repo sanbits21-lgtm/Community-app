@@ -14,7 +14,7 @@ import {
   sponsorInput,
   statusInput,
 } from '@sangha/shared';
-import type { ZodType } from 'zod';
+import { z, type ZodType } from 'zod';
 import type { Model } from 'mongoose';
 import { hashPassword, requireAdmin, requireOwner } from '../auth';
 import { config } from '../config';
@@ -35,7 +35,7 @@ import {
   SiteSettings,
 } from '../models';
 import { verifiedEmail } from '../emails';
-import { sendMail } from '../mailer';
+import { mailStatus, sendMail, sendTestMail } from '../mailer';
 import { releaseSeats, reserveSeats, syncBookedCounts } from '../seats';
 import { seedSampleContent } from '../seed';
 import { imageUpload, PROOF_NAME } from '../uploads';
@@ -193,6 +193,16 @@ adminRouter.delete('/contributions/:id', async (req, res) => {
 
 // --- Admin users (owner only) --------------------------------------------------------
 
+adminRouter.get('/email/status', (_req, res) => res.json(mailStatus()));
+adminRouter.post('/email/test', requireOwner, async (req, res) => {
+  const { to } = z.object({ to: z.string().trim().email().max(200) }).parse(req.body);
+  const result = await sendTestMail({
+    to,
+    subject: 'Test email from your Sangha website',
+    text: ['This is a test message sent from the admin screen.', '', 'If you can read this, registration and payment emails will reach people too.', 'Check that it did not land in the spam folder.'].join('\n'),
+  });
+  res.status(result.ok ? 200 : 502).json(result);
+});
 adminRouter.get('/users', requireOwner, async (_req, res) => {
   res.json(await Admin.find().select('-passwordHash').sort({ createdAt: 1 }).lean());
 });

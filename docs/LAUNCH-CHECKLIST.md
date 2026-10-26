@@ -29,7 +29,7 @@ Tick each line. Nothing here needs code changes.
 - [ ] Open the site on a phone, in English and in Kannada, in light and dark mode.
 - [ ] Register for a free event and for a paid event; confirm the payment screen shows the right IBAN and amount.
 - [ ] Install it to the home screen (PWA) and open it with the phone in flight mode: the offline page and "My registrations" should open.
-- [ ] If you set up email: register with your own address and check the confirmation arrives (and not in spam).
+- [ ] Email: set `SMTP_URL` and `MAIL_FROM`, restart, press **Send test email** in Admin > Email, then register for an event with your own address and check the confirmation arrives (and not in spam).
 
 ## 5. Keep it healthy
 

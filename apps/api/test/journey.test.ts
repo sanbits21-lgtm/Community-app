@@ -99,3 +99,36 @@ describe('sponsors', () => {
     await agent.post('/api/admin/sponsors').send({ name: '' }).expect(400);
   });
 });
+
+describe('email setup screen', () => {
+  it('needs an admin, and never reveals the SMTP password', async () => {
+    const { setTransport } = await import('../src/mailer');
+    await request(app).get('/api/admin/email/status').expect(401);
+    setTransport(null);
+    const off = await agent.get('/api/admin/email/status').expect(200);
+    expect(off.body.configured).toBe(false);
+    expect(JSON.stringify(off.body)).not.toMatch(/password|secret/i);
+  });
+  it('test email: clear message when off, ok when on, readable error when the server refuses', async () => {
+    const { setTransport } = await import('../src/mailer');
+    setTransport(null);
+    const off = await agent.post('/api/admin/email/test').send({ to: 'me@example.org' }).expect(502);
+    expect(off.body.error).toMatch(/SMTP_URL/);
+
+    const sent: Array<{ to: string }> = [];
+    // biome-ignore lint/suspicious/noExplicitAny: minimal fake transport
+    setTransport({ sendMail: async (m: any) => void sent.push(m) } as any);
+    await agent.post('/api/admin/email/test').send({ to: 'me@example.org' }).expect(200);
+    expect(sent[0]?.to).toBe('me@example.org');
+
+    // biome-ignore lint/suspicious/noExplicitAny: minimal fake transport
+    setTransport({ sendMail: async () => { throw new Error('connect to smtp://user:hunter2@mail.example.org failed: auth rejected'); } } as any);
+    const bad = await agent.post('/api/admin/email/test').send({ to: 'me@example.org' }).expect(502);
+    expect(bad.body.error).toContain('auth rejected');
+    expect(bad.body.error).not.toContain('hunter2');
+
+    await agent.post('/api/admin/email/test').send({ to: 'not-an-email' }).expect(400);
+    await request(app).post('/api/admin/email/test').send({ to: 'me@example.org' }).expect(401);
+    setTransport(null);
+  });
+});
