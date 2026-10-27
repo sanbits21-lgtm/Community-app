@@ -41,7 +41,7 @@ export function EmailPage() {
         {s && !s.configured && (
           <div className="text-sm text-muted">
             <p>To switch it on, add these settings where the app runs (the <code>.env</code> file on a server, or Environment on Render), then restart:</p>
-            <pre className="mt-2 overflow-x-auto rounded-lg bg-soft p-3 text-ink">{'SMTP_URL=smtp://LOGIN:SMTP_KEY@smtp-relay.brevo.com:587\nMAIL_FROM=Kannada Sangha <hello@yourdomain>'}</pre>
+            <pre className="mt-2 overflow-x-auto rounded-lg bg-soft p-3 text-ink">{'BREVO_API_KEY=xkeysib-...   (Brevo > SMTP & API > API keys; works on every host)\nMAIL_FROM=Kannada Sangha <verified-sender@yourdomain>\n\nor, where SMTP is allowed:\nSMTP_URL=smtp://LOGIN%40smtp-brevo.com:SMTP_KEY@smtp-relay.brevo.com:587'}</pre>
             <p className="mt-2">Ask your email provider (for example Brevo) to verify your domain (SPF and DKIM) so the emails do not go to spam.</p>
           </div>
         )}

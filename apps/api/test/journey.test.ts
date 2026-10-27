@@ -132,3 +132,38 @@ describe('email setup screen', () => {
     setTransport(null);
   });
 });
+
+describe('Brevo HTTPS API sending', () => {
+  it('sends over https with the key in a header, and hides the key in errors', async () => {
+    const { config } = await import('../src/config');
+    const { setTransport, sendTestMail, mailStatus } = await import('../src/mailer');
+    const real = globalThis.fetch;
+    const calls: Array<{ url: string; init: RequestInit }> = [];
+    config.brevoApiKey = 'xkeysib-secretvalue123';
+    config.mailFrom = 'Kannada Sangha <hello@example.org>';
+    setTransport(undefined as never); // rebuild from config
+    try {
+      globalThis.fetch = (async (url: string, init: RequestInit) => {
+        calls.push({ url, init });
+        return new Response(JSON.stringify({ messageId: '<abc@x>' }), { status: 201 });
+      }) as typeof fetch;
+      const ok = await sendTestMail({ to: 'me@example.org', subject: 's', text: 't' });
+      expect(ok).toMatchObject({ ok: true, accepted: ['me@example.org'] });
+      expect(calls[0]?.url).toBe('https://api.brevo.com/v3/smtp/email');
+      expect((calls[0]?.init.headers as Record<string, string>)['api-key']).toBe('xkeysib-secretvalue123');
+      expect(JSON.parse(String(calls[0]?.init.body)).sender).toEqual({ name: 'Kannada Sangha', email: 'hello@example.org' });
+      expect(mailStatus().host).toContain('api.brevo.com');
+      expect(JSON.stringify(mailStatus())).not.toContain('secretvalue');
+
+      globalThis.fetch = (async () => new Response(JSON.stringify({ message: 'Sender not valid xkeysib-secretvalue123' }), { status: 400 })) as typeof fetch;
+      const bad = await sendTestMail({ to: 'me@example.org', subject: 's', text: 't' });
+      expect(bad).toMatchObject({ ok: false });
+      expect(JSON.stringify(bad)).toContain('400');
+      expect(JSON.stringify(bad)).not.toContain('secretvalue');
+    } finally {
+      globalThis.fetch = real;
+      config.brevoApiKey = '';
+      setTransport(null);
+    }
+  });
+});
