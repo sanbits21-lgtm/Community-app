@@ -13,7 +13,7 @@ interface Status {
 export function EmailPage() {
   const status = useQuery({ queryKey: ['admin', 'email'], queryFn: () => api<Status>('/admin/email/status') });
   const [to, setTo] = useState('');
-  const test = useMutation({ mutationFn: () => api<{ ok: true }>('/admin/email/test', { method: 'POST', body: { to } }) });
+  const test = useMutation({ mutationFn: () => api<{ ok: true; accepted: string[]; rejected: string[]; response: string; server: string }>('/admin/email/test', { method: 'POST', body: { to } }) });
   const submit = (e: FormEvent) => {
     e.preventDefault();
     test.mutate();
@@ -53,7 +53,12 @@ export function EmailPage() {
           <input className="input mt-1" type="email" required autoComplete="email" placeholder="you@example.com" value={to} onChange={(e) => setTo(e.target.value)} /></label>
         <p className="text-xs text-muted">Only the owner can send a test. Check the spam folder too.</p>
         {test.error && <p role="alert" className="rounded-lg bg-kred/10 p-3 text-accent">{test.error.message}</p>}
-        {test.isSuccess && <p role="status" className="font-semibold text-green-700 dark:text-green-400">Sent ✓ Check that inbox now.</p>}
+        {test.data && (
+          <div role="status" className="space-y-1 text-sm">
+            <p className="font-semibold text-green-700 dark:text-green-400">{test.data.rejected.length ? 'The mail server REFUSED this address.' : 'The mail server accepted it ✓'} Now check the inbox and the spam folder.</p>
+            <p className="text-muted">Server: <code>{test.data.server || 'unknown'}</code><br />Accepted: <code>{test.data.accepted.join(', ') || 'none'}</code>{test.data.rejected.length > 0 && <><br />Refused: <code>{test.data.rejected.join(', ')}</code></>}<br />Server reply: <code>{test.data.response || '(none)'}</code></p>
+          </div>
+        )}
         <button className="btn btn-primary" disabled={test.isPending}>{test.isPending ? 'Sending…' : 'Send test email'}</button>
       </form>
     </div>

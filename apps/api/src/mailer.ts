@@ -38,12 +38,13 @@ export function mailStatus(): { configured: boolean; host: string; from: string;
 }
 
 /** Like sendMail, but says why it failed so the admin can fix the setup. The error text is shortened and never contains the SMTP password. */
-export async function sendTestMail(msg: { to: string; subject: string; text: string }): Promise<{ ok: true } | { ok: false; error: string }> {
+export async function sendTestMail(msg: { to: string; subject: string; text: string }): Promise<{ ok: true; accepted: string[]; rejected: string[]; response: string; server: string } | { ok: false; error: string }> {
   const t = getTransport();
   if (!t) return { ok: false, error: 'No mail server is set up. Add SMTP_URL to the server settings and restart the app.' };
   try {
-    await t.sendMail({ from: config.mailFrom, ...msg });
-    return { ok: true };
+    const info = await t.sendMail({ from: config.mailFrom, ...msg });
+    // What the mail server actually answered (e.g. "250 OK queued as ..."): proves the hand-off, unlike a bare "sent".
+    return { ok: true, accepted: (info?.accepted ?? []).map(String), rejected: (info?.rejected ?? []).map(String), response: String(info?.response ?? '').slice(0, 200), server: mailStatus().host };
   } catch (e) {
     const raw = e instanceof Error ? e.message : String(e);
     return { ok: false, error: raw.replace(/\/\/[^@\s/]+@/g, '//***@').slice(0, 300) };
