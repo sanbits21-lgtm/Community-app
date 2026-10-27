@@ -167,3 +167,20 @@ describe('Brevo HTTPS API sending', () => {
     }
   });
 });
+
+describe('Brevo key mix-ups', () => {
+  it('says so when an SMTP key is used as the API key', async () => {
+    const { config } = await import('../src/config');
+    const { setTransport, sendTestMail } = await import('../src/mailer');
+    config.brevoApiKey = 'xsmtpsib-abc';
+    setTransport(undefined as never);
+    try {
+      const r = await sendTestMail({ to: 'me@example.org', subject: 's', text: 't' });
+      expect(r).toMatchObject({ ok: false });
+      expect(JSON.stringify(r)).toContain('API key instead');
+    } finally {
+      config.brevoApiKey = '';
+      setTransport(null);
+    }
+  });
+});

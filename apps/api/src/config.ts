@@ -43,7 +43,7 @@ export const config = {
   /** Optional. e.g. smtp://user:pass@smtp.example.com:587 . Without it, no emails are sent. */
   smtpUrl: process.env.SMTP_URL ?? '',
   /** Brevo's HTTPS API key (starts xkeysib-). Preferred over SMTP: it works where SMTP ports are blocked, e.g. Render's free plan. */
-  brevoApiKey: process.env.BREVO_API_KEY ?? '',
+  brevoApiKey: (process.env.BREVO_API_KEY ?? '').trim().replace(/^["']|["']$/g, ''),
   mailFrom: process.env.MAIL_FROM ?? 'Kannada Sangha <no-reply@localhost>',
   /** Used for links in emails. */
   publicUrl: (process.env.PUBLIC_URL ?? 'http://localhost:5173').replace(/\/$/, ''),

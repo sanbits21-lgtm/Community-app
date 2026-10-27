@@ -18,6 +18,7 @@ function parseFrom(from: string): { name?: string; email: string } {
 function brevoApiTransport(apiKey: string): Transporter {
   return {
     sendMail: async (msg: { from: string; to: string; subject: string; text: string }) => {
+      if (apiKey.startsWith('xsmtpsib-')) throw new Error('BREVO_API_KEY holds an SMTP key (xsmtpsib-...). Create an API key instead: Brevo > SMTP & API > API keys (it starts with xkeysib-).');
       const res = await fetch('https://api.brevo.com/v3/smtp/email', {
         method: 'POST',
         headers: { 'api-key': apiKey, 'content-type': 'application/json', accept: 'application/json' },
